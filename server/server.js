@@ -1,16 +1,20 @@
 import express from 'express';
+import cors from 'cors';
 import helloWorld from './routes/helloWorld.js';
 import notFound from './middleware/notFound.js';
 import errorHandler from './middleware/error.js';
+import routes from "./routes/index.js";
 
 const port = process.env.PORT || 8000;
 
 const app = express();
 
-// Middleware goes here
+// Basic middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/helloworld', helloWorld);
+app.use('/api', routes);
 
 // NotFound Error Handler
 app.use(notFound);
