@@ -1,5 +1,4 @@
 // Sample routes for operating CRUD on User table
-// See demoUsers.js for application
 import express from "express";
 import User from "../models/User.js";
 
