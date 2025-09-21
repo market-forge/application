@@ -1,11 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-import helloWorld from './routes/helloWorld.js';
+import mongoose from 'mongoose';
 import notFound from './middleware/notFound.js';
 import errorHandler from './middleware/error.js';
 import routes from "./routes/index.js";
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const port = process.env.PORT || 8000;
+const mongoUri = process.env.MONGO_URI || "";
 
 const app = express();
 
@@ -21,5 +25,10 @@ app.use(notFound);
 
 // Error Handler middleware goes here
 app.use(errorHandler);
+
+// MongoDB connection
+mongoose.connect(mongoUri)
+.then(() => console.log("Connected to MongoDB"))
+.catch((err) => console.error("MongoDB connection error:", err));
 
 app.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
