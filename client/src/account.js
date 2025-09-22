@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { decryptData } from "./utils/encrypt";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import LogoutButton from "./components/LogoutButton";
+import LogoutButton from  "./components/LogoutButton";
 
 function App() {
   const [user, setUser] = useState(null);

@@ -3,6 +3,7 @@ import GeminiTester from "./GeminiTester";
 import React, { useState, useEffect } from "react";
 import { decryptData } from "./utils/encrypt";
 import LogoutButton from "./components/LogoutButton";
+import Account from "./Account";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,8 +36,10 @@ function App() {
 
   return (
     <div>
+      <Account />
       <div className="App">
-        <GeminiTester/>
+      
+        <GeminiTester />
       </div>
     </div>
     
