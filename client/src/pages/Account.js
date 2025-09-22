@@ -1,11 +1,11 @@
 import '../App.css';
 import React, { useState, useEffect } from "react";
 import { decryptData } from "../utils/encrypt";
-import Register from "../pages/Register";
-import Login from "../pages/Login";
+import Register from "./Register";
+import Login from "./Login";
 import LogoutButton from  "../components/LogoutButton";
 
-function App() {
+function Account() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState("login"); // "login" or "register"
 
@@ -73,4 +73,4 @@ function App() {
   );
 }
 
-export default App;
+export default Account;

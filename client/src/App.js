@@ -3,7 +3,7 @@ import GeminiTester from "./GeminiTester";
 import React, { useState, useEffect } from "react";
 import { decryptData } from "./utils/encrypt";
 import LogoutButton from "./components/LogoutButton";
-import Account from "./account/Account";
+import Account from "./pages/Account";
 
 function App() {
   const [user, setUser] = useState(null);
