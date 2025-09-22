@@ -15,7 +15,17 @@
     "cors": "2.8.5",
     "dotenv": "17.2.2",
     "express": "^5.1.0",
-    "mongoose": "^8.18.1"
+    "mongoose": "^8.18.1",
+    "axios": "^1.12.2",
+    "bcrypt": "^6.0.0",
+    "cookie-session": "^2.1.1",
+    "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
+    "querystring": "^0.2.1"
   },
   "devDependencies": {
     "nodemon": "3.1.10"
