@@ -2,17 +2,12 @@ import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 // import jwt_decode from "jwt-decode";
 import { jwtDecode } from "jwt-decode";
-import { encryptData } from "../utils/encrypt";
 
 function GoogleLoginButton({ setUser }) {
+
   const onSuccess = (credentialResponse) => {
-    try {
       const userObject = jwtDecode(credentialResponse.credential);
-      localStorage.setItem("user", encryptData({ token: credentialResponse.credential, user: userObject }));
-      setUser(userObject);
-    } catch (err) {
-      console.error("Google login failed:", err);
-    }
+      setUser(userObject); //will use it to collect user login information
   };
 
   const onError = () => console.log("Google login failed");
