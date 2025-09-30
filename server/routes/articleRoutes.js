@@ -4,6 +4,68 @@ import Summary from "../models/Summary.js";
 
 const router = express.Router();
 
+// GET /api/articles/:date - Fetch articles by date
+// Date format: YYYYMMDD (e.g., 20250923)
+router.get("/:date", async (req, res, next) => {
+    try {
+        const { date } = req.params;
+        
+        // Validate date format (YYYYMMDD)
+        if (!/^\d{8}$/.test(date)) {
+            return res.status(400).json({
+                error: "Invalid date format. Use YYYYMMDD (e.g., 20250923)"
+            });
+        }
+
+        // Find articles for the specified date
+        // Assuming time_published format is like "20250923T123000"
+        const articles = await Article.find({
+            time_published: { $regex: `^${date}` }
+        }).sort({ time_published: -1 });
+        
+        res.json(articles);
+
+    } catch (error) {
+        console.error('Error fetching articles:', error.message);
+        next(error);
+    }
+});
+
+// GET /api/articles/combined/:date - Fetch both summary and articles for a date
+router.get("/combined/:date", async (req, res, next) => {
+    try {
+        const { date } = req.params;
+        
+        // Validate date format (YYYYMMDD)
+        if (!/^\d{8}$/.test(date)) {
+            return res.status(400).json({
+                error: "Invalid date format. Use YYYYMMDD (e.g., 20250923)"
+            });
+        }
+
+        // Fetch both summary and articles concurrently
+        const [summary, articles] = await Promise.all([
+            Summary.findOne({ date: { $regex: `^${date}` } }),
+            Article.find({ time_published: { $regex: `^${date}` } })
+                .sort({ time_published: -1 })
+        ]);
+        
+        res.json({
+            date,
+            summary: summary ? {
+                combined_summary: summary.combined_summary,
+                created_at: summary.created_at
+            } : null,
+            articles,
+            total_articles: articles.length
+        });
+
+    } catch (error) {
+        console.error('Error fetching combined data:', error.message);
+        next(error);
+    }
+});
+
 // Internal middleware to protect CREATE route
 const internalOnly = (req, res, next) => {
     // Check if request is from internal system

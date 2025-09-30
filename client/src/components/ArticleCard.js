@@ -1,0 +1,100 @@
+import React from 'react';
+
+// Component to display individual article
+const ArticleCard = ({ article }) => {
+    // Format the published time
+    const formatPublishedTime = (timePublished) => {
+        if (!timePublished) return 'Unknown';
+        
+        // Assuming format like "20250923T123000"
+        const year = timePublished.substring(0, 4);
+        const month = timePublished.substring(4, 6);
+        const day = timePublished.substring(6, 8);
+        const hour = timePublished.substring(9, 11);
+        const minute = timePublished.substring(11, 13);
+        
+        return `${month}/${day}/${year} ${hour}:${minute}`;
+    };
+
+    // Get sentiment color
+    const getSentimentColor = (sentiment) => {
+        switch (sentiment?.toLowerCase()) {
+            case 'positive':
+                return 'sentiment-positive';
+            case 'negative':
+                return 'sentiment-negative';
+            case 'neutral':
+                return 'sentiment-neutral';
+            default:
+                return 'sentiment-unknown';
+        }
+    };
+
+    return (
+        <div className="article-card">
+            {/* Article Header */}
+            <div className="article-header">
+                <h3 className="article-title">
+                    <a href={article.url} target="_blank" rel="noopener noreferrer">
+                        {article.title}
+                    </a>
+                </h3>
+                <div className="article-meta">
+                    <span className="article-source">{article.source}</span>
+                    <span className="article-time">{formatPublishedTime(article.time_published)}</span>
+                </div>
+            </div>
+
+            {/* Article Image */}
+            {article.banner_image && (
+                <div className="article-image">
+                    <img src={article.banner_image} alt={article.title} />
+                </div>
+            )}
+
+            {/* Article Summary */}
+            {article.summary && (
+                <div className="article-summary">
+                    <p>{article.summary}</p>
+                </div>
+            )}
+
+            {/* Article Footer */}
+            <div className="article-footer">
+                {/* Sentiment */}
+                {article.overall_sentiment_label && (
+                    <div className={`sentiment ${getSentimentColor(article.overall_sentiment_label)}`}>
+                        <span className="sentiment-label">{article.overall_sentiment_label}</span>
+                        {article.overall_sentiment_score && (
+                            <span className="sentiment-score">
+                                ({article.overall_sentiment_score.toFixed(2)})
+                            </span>
+                        )}
+                    </div>
+                )}
+
+                {/* Tickers */}
+                {article.ticker_sentiment && article.ticker_sentiment.length > 0 && (
+                    <div className="tickers">
+                        <span className="tickers-label">Tickers:</span>
+                        {article.ticker_sentiment.slice(0, 5).map((ticker, index) => (
+                            <span key={index} className="ticker">
+                                {ticker.ticker}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                {/* Authors */}
+                {article.authors && article.authors.length > 0 && (
+                    <div className="authors">
+                        <span className="authors-label">Written By:</span>
+                        <span className="authors-list">{article.authors.join(', ')}</span>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default ArticleCard;
