@@ -415,39 +415,39 @@
   .App {
     padding: 10px;
   }
-  
+
   .news-display-header {
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
   }
-  
+
   .news-display-header h1 {
     font-size: 2rem;
   }
-  
+
   .date-picker-controls {
     align-items: stretch;
   }
-  
+
   .quick-dates {
     flex-wrap: wrap;
   }
-  
+
   .articles-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .article-meta {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
   }
-  
+
   .article-footer {
     gap: 8px;
   }
-  
+
   .tickers, .authors {
     flex-direction: column;
     align-items: flex-start;
@@ -461,19 +461,19 @@
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .summary-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .articles-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .article-card {
     padding: 15px;
   }
-  
+
   .article-title {
     font-size: 1.1rem;
   }
@@ -519,13 +519,13 @@
   .retry-btn {
     display: none;
   }
-  
+
   .article-card {
     break-inside: avoid;
     box-shadow: none;
     border: 1px solid #000;
   }
-  
+
   .summary-card {
     background: #f8f9fa !important;
     color: #000 !important;

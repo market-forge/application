@@ -130,7 +130,7 @@ const NewsDisplay = () => {
     };
 
     return (
-        <div className="news-display">
+        <div className="news-display App">
             {/* Header */}
             <div className="news-display-header">
                 <h1>Market Forge - Financial News</h1>
@@ -172,8 +172,8 @@ const NewsDisplay = () => {
             {!loading && !error && (
                 <div className="news-content">
                     {/* Summary Section */}
-                    <SummaryCard 
-                        summary={data.summary} 
+                    <SummaryCard
+                        summary={data.summary}
                         date={selectedDate}
                     />
 
