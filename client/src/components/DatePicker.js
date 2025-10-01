@@ -1,96 +1,74 @@
 import React from 'react';
 
-// Component for selecting dates
 const DatePicker = ({ selectedDate, onDateChange, availableDates = [] }) => {
-    // Get today's date in YYYY-MM-DD format
-    const getTodayDate = () => {
-        return new Date().toISOString().split('T')[0];
-    };
+    const getTodayDate = () => new Date().toISOString().split('T')[0];
 
-    // Convert YYYYMMDD to YYYY-MM-DD
     const formatDateForInput = (dateString) => {
         if (!dateString || dateString.length !== 8) return '';
         return `${dateString.substring(0, 4)}-${dateString.substring(4, 6)}-${dateString.substring(6, 8)}`;
     };
 
-    // Convert YYYY-MM-DD to readable format
     const formatDateForDisplay = (dateString) => {
         return new Date(dateString + 'T00:00:00').toLocaleDateString('en-US', {
-            weekday: 'long',
+            weekday: 'short',
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric'
         });
     };
 
-        return (
-        <div className="date-picker">
-            <div className="date-picker-header">
-                <h3>Select Date</h3>
+    return (
+        <div className="date-picker flex flex-col items-center gap-3 text-white">
+            {/* Quick Date Buttons */}
+            <div className="flex gap-2">
+                <button
+                    onClick={() => onDateChange(getTodayDate())}
+                    className={`px-4 py-1 rounded-full text-sm font-medium transition bg-white text-indigo-600 shadow-md`}
+                >
+                    Today
+                </button>
+                <button
+                    onClick={() => {
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        onDateChange(yesterday.toISOString().split('T')[0]);
+                    }}
+                    className={`px-4 py-1 rounded-full text-sm font-medium transition bg-white text-indigo-600 shadow-md`}
+                >
+                    Yesterday
+                </button>
             </div>
-            
-            <div className="date-picker-controls">
-                {/* Date Input */}
-                <div className="date-input-group">
-                    <label htmlFor="date-input">Choose Date:</label>
-                    <input
-                        id="date-input"
-                        type="date"
-                        value={selectedDate}
-                        onChange={(e) => onDateChange(e.target.value)}
-                        max={getTodayDate()}
-                        className="date-input"
-                    />
-                </div>
 
-                {/* Quick Date Buttons */}
-                <div className="quick-dates">
-                    <button
-                        onClick={() => onDateChange(getTodayDate())}
-                        className={`quick-date-btn ${selectedDate === getTodayDate() ? 'active' : ''}`}
-                    >
-                        Today
-                    </button>
-                    <button
-                        onClick={() => {
-                            const yesterday = new Date();
-                            yesterday.setDate(yesterday.getDate() - 1);
-                            onDateChange(yesterday.toISOString().split('T')[0]);
-                        }}
-                        className="quick-date-btn"
-                    >
-                        Yesterday
-                    </button>
-                </div>
+            {/* Date Input */}
+            <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => onDateChange(e.target.value)}
+                max={getTodayDate()}
+                className="px-4 py-2 rounded-xl bg-white text-indigo-700 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-60"
+            />
 
-                {/* Selected Date Display */}
-                <div className="selected-date-display">
-                    <strong>Selected: </strong>{formatDateForDisplay(selectedDate)}
-                </div>
-
-                {/* Available Dates Dropdown (if provided) */}
-                {availableDates.length > 0 && (
-                    <div className="available-dates">
-                        <label htmlFor="available-dates-select">Or choose from available dates:</label>
-                        <select
-                            id="available-dates-select"
-                            onChange={(e) => {
-                                if (e.target.value) {
-                                    onDateChange(formatDateForInput(e.target.value));
-                                }
-                            }}
-                            className="available-dates-select"
-                        >
-                            <option value="">Select from available dates...</option>
-                            {availableDates.map((dateItem) => (
-                                <option key={dateItem.date.slice(0, 8)} value={dateItem.date.slice(0, 8)}>
-                                    {formatDateForDisplay(formatDateForInput(dateItem.date.slice(0, 8)))}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                )}
+            {/* Selected Date Display */}
+            <div className="text-sm font-medium opacity-8 text-amber-700">
+                Selected: <span className="font-semibold">{formatDateForDisplay(selectedDate)}</span>
             </div>
+
+            {/* Available Dates Dropdown */}
+            {availableDates.length > 0 && (
+                <select
+                    onChange={(e) => {
+                        if (e.target.value) onDateChange(formatDateForInput(e.target.value));
+                    }}
+                    className="mt-1 px-3 py-1 rounded-lg bg-white text-indigo-700 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-60"
+                >
+                    <option value="">Select from available dates...</option>
+                    {availableDates.map((dateItem) => (
+                        <option key={dateItem.date.slice(0, 8)} value={dateItem.date.slice(0, 8)}>
+                            {formatDateForDisplay(formatDateForInput(dateItem.date.slice(0, 8)))}
+                        </option>
+                    ))}
+                </select>
+            )}
         </div>
     );
 };

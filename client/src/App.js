@@ -1,16 +1,23 @@
 import './App.css';
-import NewsDisplay from './components/NewsDisplay';
-import ApiTest from './components/ApiTest';
-import SignInNav from "./pages/SignInNav";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NewsDisplay from './pages/NewsDisplay';
+// import ApiTest from './components/ApiTest';
+import SignInNav from "./layout/SignInNav";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <div>
-        <SignInNav />
-        {/* Show API test component only in development */}
-        {process.env.NODE_ENV === 'development' && <ApiTest />}
-        <NewsDisplay />
-    </div>
+      <Router>
+          <Routes>
+              <Route path="/" element={<SignInNav />}>
+
+
+                  <Route index element={<NewsDisplay />} />
+
+              </Route>
+              <Route path="*" element={<NotFound />} />
+          </Routes>
+      </Router>
   );
 }
 
