@@ -90,6 +90,7 @@ router.post("/", internalOnly, async (req, res, next) => {
         }
 
         // Get today's date
+        // const currentDay = 20250929;
         const currentDay = new Date().toISOString().split('T')[0].replace(/-/g, '');
 
         // 🔎 Check if a summary already exists for this day
@@ -129,7 +130,7 @@ router.post("/", internalOnly, async (req, res, next) => {
         console.log('📰 Total articles found:', data.feed.length);
         console.log('Slicing articles...');
 
-        const articles = data.feed.slice(0, 20);
+        const articles = data.feed.slice(0, 10);
         // Log first article details
         const firstArticle = articles[0];
         console.log('\n--- FIRST ARTICLE SAMPLE ---');
@@ -155,7 +156,7 @@ router.post("/", internalOnly, async (req, res, next) => {
             console.log('📝 Generating combined summary with Gemini API...');
             try {
                 const geminiResponse = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
                     {
                         method: 'POST',
                         headers: {
@@ -164,13 +165,15 @@ router.post("/", internalOnly, async (req, res, next) => {
                         body: JSON.stringify({
                             contents: [{
                                 parts: [{
-                                    // text: generateSummaryPrompt(sampleNews)
                                     text: generateSummaryPrompt(combinedSummaries)
                                 }]
                             }],
                             generationConfig: {
-                                maxOutputTokens: 500,
+                                maxOutputTokens: 2000,
                                 temperature: 0.3,
+                                thinkingConfig: {
+                                    thinkingBudget: 0
+                                }
                             }
                         })
                     }
@@ -185,7 +188,7 @@ router.post("/", internalOnly, async (req, res, next) => {
                 if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
                     geminiSummary = geminiData.candidates[0].content.parts[0].text;
                 } else {
-                    throw new Error('Unexpected response format from Gemini API');
+                    throw new Error(`Unexpected response format from Gemini API: ${JSON.stringify(geminiData)}`);
                 }
             } catch (err) {
                 console.error('💥 Gemini API Error:', err.message);
