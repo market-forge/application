@@ -130,7 +130,7 @@ const NewsDisplay = () => {
     };
 
     return (
-        <div className="news-display App">
+        <>
             {/* Header */}
             <div
                 className="news-display-header flex items-center justify-between gap-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-4 rounded-2xl shadow-lg mb-8 text-white">
@@ -165,51 +165,55 @@ const NewsDisplay = () => {
                 </div>
             </div>
 
-            {/* Debug Info (only in development) */}
-            {debugInfo()}
+            <div className="news-display App">
 
-            {/* Content */}
-            {!loading && !error && (
-                <div className="news-content">
-                    {/* Header Row: Summary + Date Picker */}
-                    <div className="summary-header">
-                        <SummaryCard summary={data.summary} date={selectedDate}/>
-                    </div>
 
-                    {/* Articles Section */}
-                    <div className="articles-section">
-                        <div className="articles-header">
-                            <h2>Articles ({data.total_articles})</h2>
-                            {data.total_articles === 0 && (
-                                <p style={{color: '#6c757d', fontStyle: 'italic'}}>
-                                    No articles found for {selectedDate}. Try selecting a different date.
-                                </p>
-                            )}
+                {/* Debug Info (only in development) */}
+                {debugInfo()}
+
+                {/* Content */}
+                {!loading && !error && (
+                    <div className="news-content">
+                        {/* Header Row: Summary + Date Picker */}
+                        <div className="summary-header">
+                            <SummaryCard summary={data.summary} date={selectedDate}/>
                         </div>
 
-                        {data.articles.length > 0 ? (
-                            <div className="articles-grid">
-                                {data.articles.map((article, index) => (
-                                    <ArticleCard
-                                        key={article._id || article.url || index}
-                                        article={article}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            !loading && (
-                                <div className="no-articles">
-                                    <p>No articles found for {selectedDate}</p>
-                                    <p style={{fontSize: '0.9rem', color: '#6c757d'}}>
-                                        Try selecting a different date or check if data exists for this date.
+                        {/* Articles Section */}
+                        <div className="articles-section">
+                            <div className="articles-header">
+                                <h2>Articles ({data.total_articles})</h2>
+                                {data.total_articles === 0 && (
+                                    <p style={{color: '#6c757d', fontStyle: 'italic'}}>
+                                        No articles found for {selectedDate}. Try selecting a different date.
                                     </p>
+                                )}
+                            </div>
+
+                            {data.articles.length > 0 ? (
+                                <div className="articles-grid">
+                                    {data.articles.map((article, index) => (
+                                        <ArticleCard
+                                            key={article._id || article.url || index}
+                                            article={article}
+                                        />
+                                    ))}
                                 </div>
-                            )
-                        )}
+                            ) : (
+                                !loading && (
+                                    <div className="no-articles">
+                                        <p>No articles found for {selectedDate}</p>
+                                        <p style={{fontSize: '0.9rem', color: '#6c757d'}}>
+                                            Try selecting a different date or check if data exists for this date.
+                                        </p>
+                                    </div>
+                                )
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        </>
     );
 };
 

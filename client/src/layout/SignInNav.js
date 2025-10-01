@@ -9,7 +9,7 @@ function SignInNav() {
 
     return (
         <>
-            <header className="w-full flex justify-end items-center p-4 bg-white dark:bg-gray-800 shadow-md shadow-gray-200 dark:shadow-gray-900 rounded-b-xl">
+            <header className="w-full flex justify-end items-center p-4 bg-white dark:bg-gray-800 shadow-md shadow-gray-200 dark:shadow-gray-900">
                 <div className="flex items-center gap-3">
                     {user ? (
                         <LogoutButton
