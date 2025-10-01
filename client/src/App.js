@@ -5,11 +5,11 @@ import SignInNav from "./pages/SignInNav";
 
 function App() {
   return (
-    <div className="App">
+    <div>
+        <SignInNav />
         {/* Show API test component only in development */}
         {process.env.NODE_ENV === 'development' && <ApiTest />}
         <NewsDisplay />
-      <SignInNav />   
     </div>
   );
 }

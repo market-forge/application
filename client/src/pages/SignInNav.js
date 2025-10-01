@@ -7,7 +7,7 @@ function SignInNav() {
   const [user, setUser] = useState(null);
 
   return (
-    <div className="w-full flex justify-end items-center p-4 bg-gray-50 dark:bg-gray-900">
+    <div className="w-full flex justify-end items-center p-4 bg-gray-50 dark:bg-gray-700">
       {user ? (//user is true
         <LogoutButton user={user} setUser={setUser} />
       ) : ( // else
