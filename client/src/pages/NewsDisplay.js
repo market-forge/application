@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ApiService from '../services/api';
-import SummaryCard from './SummaryCard';
-import ArticleCard from './ArticleCard';
-import DatePicker from './DatePicker';
+import SummaryCard from '../components/SummaryCard';
+import ArticleCard from '../components/ArticleCard';
+import DatePicker from '../components/DatePicker';
 
 // Main component that handles the news display
 const NewsDisplay = () => {
@@ -47,18 +47,18 @@ const NewsDisplay = () => {
             // Try the combined endpoint first
             try {
                 const combinedData = await ApiService.getCombinedDataByDate(date);
-                
+
                 setData({
                     summary: combinedData.summary,
                     articles: combinedData.articles || [],
                     total_articles: combinedData.total_articles || 0
                 });
-                
+
                 return; // Success, exit early
-                
+
             } catch (combinedError) {
                 console.error('Combined error:', combinedError.message);
-                
+
                 // If combined endpoint fails, fetch separately
                 const [summaryData, articlesData] = await Promise.allSettled([
                     ApiService.getSummaryByDate(date),
@@ -71,7 +71,7 @@ const NewsDisplay = () => {
                 // Handle summary result
                 if (summaryData.status === 'fulfilled') {
                     summary = summaryData.value;
-                } 
+                }
 
                 // Handle articles result
                 if (articlesData.status === 'fulfilled') {
@@ -88,7 +88,7 @@ const NewsDisplay = () => {
         } catch (error) {
             console.error('Error loading data:', error);
             setError(`Failed to load data: ${error.message}`);
-            setData({ summary: null, articles: [], total_articles: 0 });
+            setData({summary: null, articles: [], total_articles: 0});
         } finally {
             setLoading(false);
         }
@@ -108,10 +108,10 @@ const NewsDisplay = () => {
     const debugInfo = () => {
         if (process.env.NODE_ENV === 'development') {
             return (
-                <div style={{ 
-                    background: '#f8f9fa', 
-                    padding: '10px', 
-                    margin: '10px 0', 
+                <div style={{
+                    background: '#f8f9fa',
+                    padding: '10px',
+                    margin: '10px 0',
                     borderRadius: '5px',
                     fontSize: '12px',
                     fontFamily: 'monospace'
@@ -132,68 +132,67 @@ const NewsDisplay = () => {
     return (
         <div className="news-display App">
             {/* Header */}
-            <div className="news-display-header">
-                <h1>Market Forge - Financial News</h1>
-                <button onClick={handleRefresh} className="refresh-btn" disabled={loading}>
-                    {loading ? 'Loading...' : 'Refresh'}
-                </button>
+            <div
+                className="news-display-header flex items-center justify-between gap-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-4 rounded-2xl shadow-lg mb-8 text-white">
+
+                {/* Left: Logo + Title */}
+                <div className="flex items-center gap-4">
+                    {/* Logo */}
+                    <div
+                        className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-extrabold text-2xl w-12 h-12 flex items-center justify-center rounded-xl shadow-lg ring-1 ring-white/30">
+                        MF
+                    </div>
+
+                    {/* Title */}
+                    <div className="flex flex-col leading-tight">
+                        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white drop-shadow-md">
+                            Market Forge
+                        </h1>
+                        <span className="text-sm sm:text-lg font-medium opacity-80 text-white tracking-wide">
+      Financial News
+    </span>
+                    </div>
+                </div>
+
+
+                {/* Center: Date Picker */}
+                <div className="flex-1 flex justify-end">
+                    <DatePicker
+                        selectedDate={selectedDate}
+                        onDateChange={handleDateChange}
+                        availableDates={availableDates}
+                    />
+                </div>
             </div>
 
             {/* Debug Info (only in development) */}
             {debugInfo()}
 
-            {/* Date Picker */}
-            <DatePicker
-                selectedDate={selectedDate}
-                onDateChange={handleDateChange}
-                availableDates={availableDates}
-            />
-
-            {/* Error Display */}
-            {error && (
-                <div className="error-message">
-                    <h3>Error</h3>
-                    <p>{error}</p>
-                    <button onClick={handleRefresh} className="retry-btn">
-                        Try Again
-                    </button>
-                </div>
-            )}
-
-            {/* Loading State */}
-            {loading && (
-                <div className="loading-state">
-                    <h3>Loading...</h3>
-                    <p>Fetching market data for {selectedDate}...</p>
-                </div>
-            )}
-
             {/* Content */}
             {!loading && !error && (
                 <div className="news-content">
-                    {/* Summary Section */}
-                    <SummaryCard
-                        summary={data.summary}
-                        date={selectedDate}
-                    />
+                    {/* Header Row: Summary + Date Picker */}
+                    <div className="summary-header">
+                        <SummaryCard summary={data.summary} date={selectedDate}/>
+                    </div>
 
                     {/* Articles Section */}
                     <div className="articles-section">
                         <div className="articles-header">
                             <h2>Articles ({data.total_articles})</h2>
                             {data.total_articles === 0 && (
-                                <p style={{ color: '#6c757d', fontStyle: 'italic' }}>
+                                <p style={{color: '#6c757d', fontStyle: 'italic'}}>
                                     No articles found for {selectedDate}. Try selecting a different date.
                                 </p>
                             )}
                         </div>
-                        
+
                         {data.articles.length > 0 ? (
                             <div className="articles-grid">
                                 {data.articles.map((article, index) => (
-                                                                        <ArticleCard 
-                                        key={article._id || article.url || index} 
-                                        article={article} 
+                                    <ArticleCard
+                                        key={article._id || article.url || index}
+                                        article={article}
                                     />
                                 ))}
                             </div>
@@ -201,7 +200,7 @@ const NewsDisplay = () => {
                             !loading && (
                                 <div className="no-articles">
                                     <p>No articles found for {selectedDate}</p>
-                                    <p style={{ fontSize: '0.9rem', color: '#6c757d' }}>
+                                    <p style={{fontSize: '0.9rem', color: '#6c757d'}}>
                                         Try selecting a different date or check if data exists for this date.
                                     </p>
                                 </div>

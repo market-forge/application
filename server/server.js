@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', routes);
 
-// NotFound Error Handler
+// NotFound.js Error Handler
 app.use(notFound);
 
 // Error Handler middleware goes here
