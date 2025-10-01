@@ -1,7 +1,6 @@
 import './App.css';
 import NewsDisplay from './components/NewsDisplay';
 import ApiTest from './components/ApiTest';
-import GeminiTester from "./GeminiTester";
 import SignInNav from "./pages/SignInNav";
 
 function App() {
