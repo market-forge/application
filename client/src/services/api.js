@@ -67,6 +67,12 @@ class ApiService {
         return await this.fetchWithErrorHandling(url);
     }
 
+    // Fetch article by ID
+    static async getArticleById(id) {
+        const url = `${API_BASE_URL}/articles/id/${id}`;
+        return await this.fetchWithErrorHandling(url);
+    }
+
     // Get all available summaries (for date selection)
     static async getAllSummaries() {
         const url = `${API_BASE_URL}/summaries`;
@@ -83,6 +89,24 @@ class ApiService {
             console.error('API connection test failed:', error.message);
             return false;
         }
+    }
+
+    // Get historical candlestick data for a stock
+    static async getStockCandlestickData(symbol, range = '1D') {
+        const url = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}&timeseries=${range}`;
+        return await this.fetchWithErrorHandling(url);
+    }
+
+    // Get real-time stock quote
+    static async getStockQuote(symbol) {
+        const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_API_KEY}`;
+        return await this.fetchWithErrorHandling(url);
+    }
+
+    // Get company profile
+    static async getCompanyProfile(symbol) {
+        const url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${FMP_API_KEY}`;
+        return await this.fetchWithErrorHandling(url);
     }
 }
 
