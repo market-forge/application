@@ -36,7 +36,7 @@ router.get("/callback", async (req, res) => {
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
     );
     const userInfo = await userInfoRes.json();
-    console.log("Google user info:", userInfo);
+    // console.log("Google user info:", userInfo);
 
     // insert user in DB if doesn't exist
     let user;
