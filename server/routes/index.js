@@ -3,6 +3,7 @@ import helloWorld from './helloWorld.js';
 import userRoutes from './userRoutes.js';
 import articlesRoutes from './articleRoutes.js';
 import summaryRoutes from './summaryRoutes.js';
+import oauthRoutes from "./oauth.js";
 
 const router = express.Router();
 
@@ -11,5 +12,6 @@ router.use('/helloworld', helloWorld);
 router.use('/users', userRoutes);
 router.use('/articles', articlesRoutes);
 router.use('/summaries', summaryRoutes);
+router.use("/oauth", oauthRoutes);
 
 export default router;
