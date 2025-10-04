@@ -1,18 +1,20 @@
 import React from "react";
-import { GoogleLogin } from "@react-oauth/google";
-// import jwt_decode from "jwt-decode";
-import { jwtDecode } from "jwt-decode";
 
-function GoogleLoginButton({ setUser }) {
-
-  const onSuccess = (credentialResponse) => {
-      const userObject = jwtDecode(credentialResponse.credential);
-      setUser(userObject); //will use it to collect user login information
+function GoogleLoginButton() {
+  const handleLogin = async () => {
+    const res = await fetch("http://localhost:8000/api/oauth/url");
+    const data = await res.json();
+    window.location.href = data.url; // send user to Google login
   };
 
-  const onError = () => console.log("Google login failed");
-
-  return <GoogleLogin onSuccess={onSuccess} onError={onError} />;
+  return (
+    <button
+      onClick={handleLogin}
+      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition duration-200"
+    >
+      Sign in with Google
+    </button>
+  );
 }
 
 export default GoogleLoginButton;
