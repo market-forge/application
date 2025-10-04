@@ -4,8 +4,8 @@ import mongoose from 'mongoose';
 import notFound from './middleware/notFound.js';
 import errorHandler from './middleware/error.js';
 import routes from "./routes/index.js";
-
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 const port = process.env.PORT || 8000;

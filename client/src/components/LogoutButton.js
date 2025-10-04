@@ -4,7 +4,6 @@ function LogoutButton({ user, setUser }) {
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    // window.open("http://localhost:8000/auth/logout", "_self");
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
 import { Outlet } from "react-router-dom";
 import GoogleLoginButton from "../components/GoogleLoginButton";
@@ -6,6 +6,15 @@ import LogoutButton from "../components/LogoutButton";
 
 function SignInNav() {
     const [user, setUser] = useState(null);
+
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // decode token payload
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      setUser({ email: payload.email }); // or fetch full profile from backend
+        }
+    }, []);
 
     return (
         <>
@@ -20,7 +29,7 @@ function SignInNav() {
                     ) : (
                         <GoogleLoginButton
                             setUser={setUser}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md transition duration-200"
+                            className="px-4 py-2 bg-blue-100 hover:bg-blue-700 text-black rounded-lg font-medium shadow-md transition duration-200"
                         />
                     )}
                 </div>
