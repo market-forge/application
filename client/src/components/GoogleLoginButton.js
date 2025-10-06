@@ -1,8 +1,9 @@
 import React from "react";
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:8000";
 
 function GoogleLoginButton() {
   const handleLogin = async () => {
-    const res = await fetch("http://localhost:8000/api/oauth/url");
+    const res = await fetch(`${SERVER_URL}/api/oauth/url`);
     const data = await res.json();
     window.location.href = data.url; // send user to Google login
   };
