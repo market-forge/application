@@ -1,18 +1,14 @@
 import React from "react";
 
-console.log("Entering GoogleLoginButton.js");
-console.log("Server URL:", process.env.REACT_APP_SERVER_URL);
-console.log("Client URL:", process.env.REACT_APP_CLIENT_URL);
 
 function GoogleLoginButton() {
   const handleLogin = async () => {
     try {
       const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/oauth/url`);
       const data = await res.json();
-      console.log("Redirecting to:", data.url);
       window.location.href = data.url; // send user to Google login
     } catch (err) {
-      console.error("Login request failed:", err);
+      console.error("Login request failed:");
     }
   };
 

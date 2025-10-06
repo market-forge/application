@@ -12,7 +12,7 @@ function SignInNav() {
     if (token) {
       // decode token payload
       const payload = JSON.parse(atob(token.split(".")[1]));
-      setUser({ email: payload.email }); // or fetch full profile from backend
+      setUser({ name: payload.name }); // or fetch full profile from backend
         }
     }, []);
 
