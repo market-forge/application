@@ -33,7 +33,7 @@ router.get("/callback", async (req, res) => {
 
     // Get user profile from Google
     const userInfoRes = await fetch(
-      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
+      `${process.env.GOOGLE_OAUTH_URL}=${tokens.access_token}`
     );
     const userInfo = await userInfoRes.json();
     // console.log("Google user info:", userInfo);
@@ -68,7 +68,7 @@ router.get("/callback", async (req, res) => {
     // Send token + user back (in real app: redirect to frontend with token)
     // res.json({ user, token });
     // 🔑 Redirect to React frontend
-    res.redirect(`http://localhost:3000?token=${token}`);
+    res.redirect(`${process.env.CLIENT_URL}?token=${token}`);
 
   } catch (err) {
     console.error("OAuth error:", err);
