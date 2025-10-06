@@ -36,7 +36,6 @@ router.get("/callback", async (req, res) => {
       `${process.env.GOOGLE_OAUTH_URL}=${tokens.access_token}`
     );
     const userInfo = await userInfoRes.json();
-    console.log("Google user info:", userInfo);
 
     // insert user in DB if doesn't exist
     let user;
@@ -59,7 +58,13 @@ router.get("/callback", async (req, res) => {
 
     // Create your own JWT and Sign JWT for your app
     const token = jwt.sign(
-      { id: user._id, email: userInfo.email, age: user.age, full_name: userInfo.name, name: userInfo.given_name, family_name: userInfo.family_name },
+      { id: user._id, 
+        email: userInfo.email, 
+        age: user.age,
+        full_name: userInfo.name,
+        name: userInfo.given_name,
+        family_name: userInfo.family_name
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
