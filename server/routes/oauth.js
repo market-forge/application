@@ -33,10 +33,10 @@ router.get("/callback", async (req, res) => {
 
     // Get user profile from Google
     const userInfoRes = await fetch(
-      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
+      `${process.env.GOOGLE_OAUTH_URL}=${tokens.access_token}`
     );
     const userInfo = await userInfoRes.json();
-    // console.log("Google user info:", userInfo);
+    console.log("Google user info:", userInfo);
 
     // insert user in DB if doesn't exist
     let user;
@@ -48,27 +48,26 @@ router.get("/callback", async (req, res) => {
         user = await User.create({
           name: userInfo.name,
           email: userInfo.email,
-          age: 18 // default age since Google doesn’t provide it
+          age: userInfo.age || 18 // default age since Google doesn’t provide it
+
         });
-      } else {
-        console.log("User already exists:", user.email);
       }
     } catch (dbErr) {
       console.error("Database Connection error:");
-      return res.status(500).json({ error: "Database error" });
+      return res.status(500).json({ "Database Connection error": "No Connection"});
     }
 
-    // Sign JWT for your app
+    // Create your own JWT and Sign JWT for your app
     const token = jwt.sign(
-      { id: user._id, email: user.email, age: user.age },
+      { id: user._id, email: userInfo.email, age: user.age, full_name: userInfo.name, name: userInfo.given_name, family_name: userInfo.family_name },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     // Send token + user back (in real app: redirect to frontend with token)
     // res.json({ user, token });
-    // 🔑 Redirect to React frontend
-    res.redirect(`http://localhost:3000?token=${token}`);
+    // 🔑 Redirect to frontend with JWT as URL param
+    res.redirect(`${process.env.CLIENT_URL}?token=${token}`);
 
   } catch (err) {
     console.error("OAuth error:", err);
