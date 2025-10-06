@@ -67,6 +67,12 @@ class ApiService {
         return await this.fetchWithErrorHandling(url);
     }
 
+    // Fetch article by ID
+    static async getArticleById(id) {
+        const url = `${API_BASE_URL}/articles/id/${id}`;
+        return await this.fetchWithErrorHandling(url);
+    }
+
     // Get all available summaries (for date selection)
     static async getAllSummaries() {
         const url = `${API_BASE_URL}/summaries`;

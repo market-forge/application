@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Component to display individual article
 const ArticleCard = ({ article }) => {
+    const navigate = useNavigate();
+
     // Format the published time
     const formatPublishedTime = (timePublished) => {
         if (!timePublished) return 'Unknown';
@@ -19,8 +22,12 @@ const ArticleCard = ({ article }) => {
     // Get sentiment color
     const getSentimentColor = (sentiment) => {
         switch (sentiment?.toLowerCase()) {
+            case 'bullish':
+            case 'somewhat-bullish':
             case 'positive':
                 return 'sentiment-positive';
+            case 'bearish':
+            case 'somewhat-bearish':
             case 'negative':
                 return 'sentiment-negative';
             case 'neutral':
@@ -30,14 +37,20 @@ const ArticleCard = ({ article }) => {
         }
     };
 
+    const handleCardClick = () => {
+        navigate(`/article/${article._id}`);
+    };
+
+    const handleLinkClick = (e) => {
+        e.stopPropagation(); // Prevent card click when clicking external link
+    };
+
     return (
-        <div className="article-card">
+        <div className="article-card" onClick={handleCardClick}>
             {/* Article Header */}
             <div className="article-header">
                 <h3 className="article-title">
-                    <a href={article.url} target="_blank" rel="noopener noreferrer">
-                        {article.title}
-                    </a>
+                    <span className="article-title-text">{article.title}</span>
                 </h3>
                 <div className="article-meta">
                     <span className="article-source">{article.source}</span>
@@ -92,6 +105,20 @@ const ArticleCard = ({ article }) => {
                         <span className="authors-list">{article.authors.join(', ')}</span>
                     </div>
                 )}
+            </div>
+
+            {/* External Link and Details Button */}
+            <div className="article-actions">
+                <a 
+                    href={article.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="external-link-btn"
+                    onClick={handleLinkClick}
+                >
+                    Source
+                </a>
+                <span className="details-hint">Click card for details →</span>
             </div>
         </div>
     );

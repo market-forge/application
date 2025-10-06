@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import Article from "../models/Article.js";
 import Summary from "../models/Summary.js";
 
@@ -62,6 +63,35 @@ router.get("/combined/:date", async (req, res, next) => {
 
     } catch (error) {
         console.error('Error fetching combined data:', error.message);
+        next(error);
+    }
+});
+
+// GET /api/articles/id/:id - Fetch article by ID
+router.get("/id/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                error: "Invalid article ID format"
+            });
+        }
+
+        // Find article by ID
+        const article = await Article.findById(id);
+        
+        if (!article) {
+            return res.status(404).json({
+                error: "Article not found"
+            });
+        }
+        
+        res.json(article);
+
+    } catch (error) {
+        console.error('Error fetching article by ID:', error.message);
         next(error);
     }
 });
