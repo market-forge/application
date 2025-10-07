@@ -120,7 +120,7 @@ router.post("/", internalOnly, async (req, res, next) => {
         }
 
         // Get today's date
-        // const currentDay = 20250929;
+        // const currentDay = 20251006;
         const currentDay = new Date().toISOString().split('T')[0].replace(/-/g, '');
 
         // 🔎 Check if a summary already exists for this day
