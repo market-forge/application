@@ -40,7 +40,7 @@ function LogoutButton({ user, setUser }) {
 
           <button
               onClick={logout}
-              className="px-3 py-1 text-sm text-white font-medium
+              className="px-3 py-1 text-sm text-black font-medium
                hover:text-red-400 focus:outline-none focus:ring-2
                focus:ring-offset-2 focus:ring-red-400
                transition duration-200 ease-in-out"

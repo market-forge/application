@@ -6,6 +6,7 @@ import LogoutButton from "../components/LogoutButton";
 
 function SignInNav() {
     const [user, setUser] = useState(null);
+    console.log("Current user:", user);
 
     useEffect(() => {
     const token = localStorage.getItem("token");
@@ -29,7 +30,7 @@ function SignInNav() {
                     ) : (
                         <GoogleLoginButton
                             setUser={setUser}
-                            className="px-4 py-2 bg-blue-100 hover:bg-blue-700 text-black rounded-lg font-medium shadow-md transition duration-200"
+                            className="px-4 py-2 bg-blue-200 hover:bg-blue-700 text-black rounded-lg font-medium shadow-md transition duration-200"
                         />
                     )}
                 </div>
