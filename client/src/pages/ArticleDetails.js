@@ -184,7 +184,7 @@ const ArticleDetails = () => {
                 {/* IFRAME SECTION */}
                 <div className={`iframe-desktop iframe-wrapper ${iframeVisible ? "iframe-visible" : ""}`} aria-hidden={!iframeVisible}>
                     <iframe
-                        src={`http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`}
+                        src={`${process.env.REACT_APP_SERVER_URL}/api` || `http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`}
                         title="External Article"
                         sandbox="allow-scripts allow-same-origin"
                         onLoad={() => setIframeLoaded(true)}
