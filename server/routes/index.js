@@ -7,7 +7,14 @@ import proxyRoute from "./proxy.js";
 
 const router = express.Router();
 
-// Mount all routes here
+router.get('/', (req, res) => {
+    res.status(200).json({
+        message: 'Welcome to the API — connection successful!',
+        status: 'OK',
+        timestamp: new Date().toISOString()
+    });
+});
+
 router.use('/users', userRoutes);
 router.use('/articles', articlesRoutes);
 router.use('/summaries', summaryRoutes);
