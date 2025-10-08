@@ -37,41 +37,55 @@ router.get("/callback", async (req, res) => {
     );
     const userInfo = await userInfoRes.json();
 
-    // insert user in DB if doesn't exist
+    // Insert or update user in DB
     let user;
     try {
       // Check if user exists by email
       user = await User.findOne({ email: userInfo.email });
       if (!user) {
-        // Create new user if doesn't exist
+        // Create new user with enhanced profile data
         user = await User.create({
           name: userInfo.name,
           email: userInfo.email,
-          age: userInfo.age || 18 // default age since Google doesn’t provide it
-
+          given_name: userInfo.given_name,
+          family_name: userInfo.family_name,
+          picture: userInfo.picture,
+          locale: userInfo.locale,
+          last_login: new Date(),
+          // Set age from legacy field if needed
+          age: 18 // default age since Google doesn't provide it
         });
+      } else {
+        // Update existing user with latest Google info and last login
+        user = await User.findByIdAndUpdate(user._id, {
+          name: userInfo.name,
+          given_name: userInfo.given_name,
+          family_name: userInfo.family_name,
+          picture: userInfo.picture,
+          locale: userInfo.locale,
+          last_login: new Date()
+        }, { new: true });
       }
     } catch (dbErr) {
-      console.error("Database Connection error:");
+      console.error("Database Connection error:", dbErr);
       return res.status(500).json({ "Database Connection error": "No Connection"});
     }
 
-    // Create your own JWT and Sign JWT for your app
+    // Create JWT with enhanced user data
     const token = jwt.sign(
-      { id: user._id, 
-        email: userInfo.email, 
-        age: user.age,
+      { 
+        id: user._id, 
+        email: user.email,
+        name: userInfo.given_name || userInfo.name,
         full_name: userInfo.name,
-        name: userInfo.given_name,
-        family_name: userInfo.family_name
+        family_name: userInfo.family_name,
+        picture: userInfo.picture
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
 
-    // Send token + user back (in real app: redirect to frontend with token)
-    // res.json({ user, token });
-    // 🔑 Redirect to frontend with JWT as URL param
+    // Redirect to frontend with JWT
     res.redirect(`${process.env.CLIENT_URL}?token=${token}`);
 
   } catch (err) {
