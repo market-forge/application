@@ -536,7 +536,7 @@
 
 /* Article Details Page Styles */
 .article-details-page {
-    max-width: 900px;
+    /*max-width: 900px;*/
     margin: 0 auto;
     padding: 20px;
     background-color: #ffffff;
@@ -903,7 +903,6 @@
     text-decoration: none;
 }
 
-/* Article Card Updates */
 .article-card {
     cursor: pointer;
     position: relative;
@@ -956,7 +955,6 @@
     font-style: italic;
 }
 
-/* Responsive Design for Article Details */
 @media (max-width: 768px) {
     .article-details-page {
         margin: 10px;
@@ -1045,7 +1043,6 @@
     }
 }
 
-/* Loading and Error States for Article Details */
 .article-details-loading {
     display: flex;
     flex-direction: column;
@@ -1064,7 +1061,6 @@
     border: 1px solid #f5c6cb;
 }
 
-/* Related Articles Styles */
 .article-details-related {
     margin: 40px 0;
     padding: 25px;
@@ -1159,4 +1155,119 @@
         align-items: flex-start;
         gap: 8px;
     }
+}
+
+.article-details-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+}
+
+.article-details-content {
+    overflow-y: auto;
+    max-height: 85vh;
+    padding-right: 1rem;
+}
+
+.iframe-wrapper {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.15);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.iframe-wrapper.iframe-visible {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+@media (max-width: 1024px) {
+    .article-details-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .iframe-wrapper {
+        margin-top: 1.5rem;
+        transform: translateY(40px);
+    }
+
+    .article-details-content {
+        overflow-y: visible; /* scroll removed */
+    }
+}
+
+.article-details-page { position: relative; display: flex; flex-direction: column; }
+.article-details-header { padding: 1rem 2rem; display:flex; align-items:center; gap:1rem; }
+
+.article-details-layout { display: flex; flex-direction: row; transition: all 0.6s ease-in-out; }
+
+.article-details-content {
+    flex: 1;
+    padding-top: 2rem;
+    padding-left: 5.5rem;
+    padding-right: 5.5rem;
+    transition: margin-left 0.6s ease-in-out;
+    overflow-y: unset;
+}
+
+.iframe-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 4px 0 18px rgba(0,0,0,0.15);
+    border-radius: 0 12px 12px 0;
+    transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+    z-index: 20;
+}
+
+.iframe-wrapper.iframe-visible { width: 50vw; }
+
+.iframe-wrapper iframe { width: 100%; height: 100%; border: none; opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
+.iframe-wrapper.iframe-visible iframe { opacity: 1; transform: translateX(0); }
+
+.article-details-page.iframe-open .article-details-content { margin-left: 52vw; padding-left: 1rem; padding-right: 1rem; }
+
+.iframe-toggle-btn {
+    position: fixed; top: 50%; left: 0; transform: translateY(-50%);
+    color:#fff; border:none; padding:0.6rem 1rem; border-radius:0 6px 6px 0;
+    cursor:pointer; z-index:30; font-weight:500; transition: all 0.3s ease;
+    background: rgba(107, 12, 12, 0.63)
+}
+.iframe-toggle-btn.open { left: 50vw; background:#33333380; border-radius:6px 0 0 6px; }
+
+@media (max-width: 1024px) {
+    .article-details-layout { flex-direction: column; }
+
+    .iframe-wrapper {
+        position: relative;
+        left: auto;
+        top: auto;
+        bottom: auto;
+        width: 100% !important;
+        height: 50vh;
+        border-radius: 0;
+        box-shadow: none;
+        transition: height 0.4s ease;
+    }
+
+    .iframe-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        transform: none;
+    }
+
+    .iframe-desktop {
+        display: none !important;
+    }
+
+    .article-details-page.iframe-open .article-details-content { margin-left: 0; overflow-y: visible; }
+    .article-details-content { margin-left: 0; overflow-y: unset; }
+
+    .iframe-toggle-btn { display: none; }
 }
