@@ -2,6 +2,20 @@
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 class ApiService {
+    // Get auth token from localStorage
+    static getAuthToken() {
+        return localStorage.getItem('token');
+    }
+
+    // Get auth headers
+    static getAuthHeaders() {
+        const token = this.getAuthToken();
+        return token ? {
+            'Authorization': `Bearer ${token}`,
+            'x-auth-token': token // Also send as custom header for fallback
+        } : {};
+    }
+
     // Get today's date in YYYYMMDD format
     static getTodayDate() {
         return new Date().toISOString().split('T')[0].replace(/-/g, '');
@@ -14,11 +28,11 @@ class ApiService {
 
     // Generic fetch with error handling
     static async fetchWithErrorHandling(url, options = {}) {
-        
         try {
             const response = await fetch(url, {
                 headers: {
                     'Content-Type': 'application/json',
+                    ...this.getAuthHeaders(),
                     ...options.headers
                 },
                 ...options
@@ -46,6 +60,22 @@ class ApiService {
         }
     }
 
+    // Profile API methods
+    static async getUserProfile() {
+        const url = `${API_BASE_URL}/profile`;
+        return await this.fetchWithErrorHandling(url);
+    }
+
+    static async updateUserProfile(profileData) {
+        const url = `${API_BASE_URL}/profile`;
+        return await this.fetchWithErrorHandling(url, {
+            method: 'PUT',
+            body: JSON.stringify(profileData)
+        });
+    }
+
+    // Existing methods...
+    
     // Fetch combined summary and articles for a specific date
     static async getCombinedDataByDate(date) {
         const formattedDate = this.formatDateForAPI(date);
