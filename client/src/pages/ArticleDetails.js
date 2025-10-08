@@ -10,6 +10,14 @@ const ArticleDetails = () => {
     const [error, setError] = useState(null);
     const [relatedArticles, setRelatedArticles] = useState([]);
     const [iframeLoaded, setIframeLoaded] = useState(false);
+    const [iframeOpen, setIframeOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         loadArticleDetails();
@@ -111,6 +119,8 @@ const ArticleDetails = () => {
         }
     };
 
+    const iframeVisible = iframeLoaded && (iframeOpen || isMobile);
+
     if (loading) {
         return (
             <div className="loading-state">
@@ -148,75 +158,69 @@ const ArticleDetails = () => {
     }
 
     return (
-        <div className="article-details-page">
+        <div className={`article-details-page ${iframeOpen ? "iframe-open" : ""} ${isMobile ? "is-mobile" : ""}`}>
+            {/* Toggle button (desktop only) */}
+            {!isMobile && (
+                <button
+                    className={`iframe-toggle-btn ${iframeOpen ? "open" : ""}`}
+                    onClick={() => setIframeOpen((s) => !s)}
+                    aria-expanded={iframeOpen}
+                >
+                    {iframeOpen ? "⟨ Hide Article" : "⟩ Show Article"}
+                </button>
+            )}
+
             {/* Header */}
             <div className="article-details-header">
-                <button onClick={() => navigate(-1)} className="back-btn">
-                    ← Back to News
-                </button>
+                <button onClick={() => navigate(-1)} className="back-btn">← Back to News</button>
                 <div className="article-source-info">
                     <span className="article-source">{article.source}</span>
                     <span className="article-domain">{article.source_domain}</span>
                 </div>
             </div>
 
-            <div className="article-details-layout">
-                <div className={`iframe-wrapper ${iframeLoaded ? "iframe-visible" : ""}`}>
+            {/* Layout container */}
+            <div className={`article-details-layout ${isMobile ? "mobile" : "desktop"}`}>
+                {/* IFRAME SECTION */}
+                <div className={`iframe-desktop iframe-wrapper ${iframeVisible ? "iframe-visible" : ""}`} aria-hidden={!iframeVisible}>
                     <iframe
                         src={`http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`}
                         title="External Article"
                         sandbox="allow-scripts allow-same-origin"
-                        style={{
-                            width: "100%",
-                            height: "85vh",
-                            border: "none",
-                            opacity: iframeLoaded ? 1 : 0,
-                            transform: iframeLoaded ? "translateX(0)" : "translateX(-40px)",
-                            transition: "all 0.6s ease-in-out",
-                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                            borderRadius: "12px",
-                            backgroundColor: "#fff",
-                        }}
                         onLoad={() => setIframeLoaded(true)}
+                        loading="lazy"
                     />
                 </div>
 
-
+                {/* MAIN CONTENT (left) */}
                 <div className="article-details-content">
+                    {/* Title */}
                     <h1 className="article-details-title">{article.title}</h1>
 
+                    {/* Meta */}
                     <div className="article-details-meta">
                         <div className="article-time">🗓️ {formatPublishedTime(article.time_published)}</div>
-                        {article.authors && article.authors.length > 0 && (
-                            <div className="article-authors">~ By {article.authors.join(", ")}</div>
-                        )}
+                        {article.authors?.length > 0 && <div className="article-authors">~ By {article.authors.join(", ")}</div>}
                     </div>
 
+                    {/* Banner */}
                     {article.banner_image && (
-                        <div className="article-details-image">
-                            <img src={article.banner_image} alt={article.title} />
-                        </div>
+                        <div className="article-details-image"><img src={article.banner_image} alt={article.title} /></div>
                     )}
 
+                    {/* Summary */}
                     {article.summary && (
-                        <div className="article-details-summary">
-                            <h2>Summary</h2>
-                            <p>{article.summary}</p>
-                        </div>
+                        <div className="article-details-summary"><h2>Summary</h2><p>{article.summary}</p></div>
                     )}
 
                     {/* Sentiment */}
                     <div className="article-details-sentiment">
                         <h2>Market Sentiment</h2>
                         <div className={`sentiment-display ${getSentimentColor(article.overall_sentiment_label)}`}>
-          <span className="sentiment-icon">
-            {getSentimentIcon(article.overall_sentiment_label)}
-          </span>
+                            <span className="sentiment-icon">{getSentimentIcon(article.overall_sentiment_label)}</span>
                             <div className="sentiment-info">
                                 <span className="sentiment-label">{article.overall_sentiment_label}</span>
-                                <span className="sentiment-score">
-              Score: {article.overall_sentiment_score?.toFixed(3)}
-            </span>
+                                <span className="sentiment-score">Score: {article.overall_sentiment_score?.toFixed(3)}</span>
                             </div>
                         </div>
                     </div>
@@ -226,25 +230,16 @@ const ArticleDetails = () => {
                         <div className="article-details-tickers">
                             <h2>Stock Tickers & Sentiment</h2>
                             <div className="tickers-grid">
-                                {article.ticker_sentiment.map((ticker, index) => (
-                                    <div key={index} className="ticker-card">
+                                {article.ticker_sentiment.map((ticker, i) => (
+                                    <div key={i} className="ticker-card">
                                         <div className="ticker-symbol">{ticker.ticker}</div>
                                         <div className="ticker-details">
-                                            <div
-                                                className={`ticker-sentiment ${getSentimentColor(
-                                                    ticker.ticker_sentiment_label
-                                                )}`}
-                                            >
-                                                {getSentimentIcon(ticker.ticker_sentiment_label)}{" "}
-                                                {ticker.ticker_sentiment_label}
+                                            <div className={`ticker-sentiment ${getSentimentColor(ticker.ticker_sentiment_label)}`}>
+                                                {getSentimentIcon(ticker.ticker_sentiment_label)} {ticker.ticker_sentiment_label}
                                             </div>
                                             <div className="ticker-scores">
-                    <span>
-                      Relevance: {(parseFloat(ticker.relevance_score) * 100).toFixed(1)}%
-                    </span>
-                                                <span>
-                      Sentiment: {parseFloat(ticker.ticker_sentiment_score).toFixed(3)}
-                    </span>
+                                                <span>Relevance: {(parseFloat(ticker.relevance_score) * 100).toFixed(1)}%</span>
+                                                <span>Sentiment: {parseFloat(ticker.ticker_sentiment_score).toFixed(3)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -258,18 +253,17 @@ const ArticleDetails = () => {
                         <div className="article-details-topics">
                             <h2>Topics</h2>
                             <div className="topics-list">
-                                {article.topics.map((topic, index) => (
-                                    <div key={index} className="topic-item">
-                                        <span className="topic-name">{topic.topic}</span>
-                                        <span className="topic-relevance">
-                  {(parseFloat(topic.relevance_score) * 100).toFixed(1)}%
-                </span>
+                                {article.topics.map((t, idx) => (
+                                    <div key={idx} className="topic-item">
+                                        <span className="topic-name">{t.topic}</span>
+                                        <span className="topic-relevance">{(parseFloat(t.relevance_score) * 100).toFixed(1)}%</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
 
+                    {/* Category */}
                     {article.category_within_source && (
                         <div className="article-details-category">
                             <h2>Category</h2>
@@ -277,48 +271,38 @@ const ArticleDetails = () => {
                         </div>
                     )}
 
+                    {/* Read Full */}
                     <div className="article-details-actions">
-                        <a
-                            href={article.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="read-full-article-btn"
-                        >
+                        <a href={article.url} target="_blank" rel="noopener noreferrer" className="read-full-article-btn">
                             Read Full Article on {article.source}
                         </a>
                     </div>
 
-                    {relatedArticles.length > 0 && (
+                    <div className={`iframe-wrapper ${iframeVisible ? "iframe-visible" : ""}`} aria-hidden={!iframeVisible}>
+                        <iframe
+                            src={`http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`}
+                            title="External Article"
+                            sandbox="allow-scripts allow-same-origin"
+                            onLoad={() => setIframeLoaded(true)}
+                            loading="lazy"
+                        />
+                    </div>
+
+                    {/* Related */}
+                    {relatedArticles?.length > 0 && (
                         <div className="article-details-related">
                             <h2>Related Articles</h2>
                             <div className="related-articles-grid">
-                                {relatedArticles.map((relatedArticle) => (
-                                    <div
-                                        key={relatedArticle._id}
-                                        className="related-article-card"
-                                        onClick={() => navigate(`/article/${relatedArticle._id}`)}
-                                    >
-                                        {relatedArticle.banner_image && (
-                                            <img
-                                                src={relatedArticle.banner_image}
-                                                alt={relatedArticle.title}
-                                                className="related-article-image"
-                                            />
-                                        )}
+                                {relatedArticles.map((ra) => (
+                                    <div key={ra._id} className="related-article-card" onClick={() => navigate(`/article/${ra._id}`)}>
+                                        {ra.banner_image && <img src={ra.banner_image} alt={ra.title} className="related-article-image" />}
                                         <div className="related-article-content">
-                                            <h4 className="related-article-title">{relatedArticle.title}</h4>
+                                            <h4 className="related-article-title">{ra.title}</h4>
                                             <div className="related-article-meta">
-                    <span className="related-article-source">
-                      {relatedArticle.source}
-                    </span>
-                                                <span
-                                                    className={`related-article-sentiment ${getSentimentColor(
-                                                        relatedArticle.overall_sentiment_label
-                                                    )}`}
-                                                >
-                      {getSentimentIcon(relatedArticle.overall_sentiment_label)}{" "}
-                                                    {relatedArticle.overall_sentiment_label}
-                    </span>
+                                                <span className="related-article-source">{ra.source}</span>
+                                                <span className={`related-article-sentiment ${getSentimentColor(ra.overall_sentiment_label)}`}>
+                          {getSentimentIcon(ra.overall_sentiment_label)} {ra.overall_sentiment_label}
+                        </span>
                                             </div>
                                         </div>
                                     </div>
@@ -330,6 +314,6 @@ const ArticleDetails = () => {
             </div>
         </div>
     );
-};
+}
 
 export default ArticleDetails;
