@@ -1,5 +1,5 @@
 // API service for making requests to the backend
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = `${process.env.REACT_APP_SERVER_URL}/api}` || 'http://localhost:8000/api';
 
 class ApiService {
     // Get today's date in YYYYMMDD format
