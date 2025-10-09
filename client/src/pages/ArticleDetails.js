@@ -13,8 +13,6 @@ const ArticleDetails = () => {
     const [iframeOpen, setIframeOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
-    const proxyRoute = process.env.REACT_APP_SERVER_URL ? `${process.env.REACT_APP_SERVER_URL}/api/proxy?url=${encodeURIComponent(article.url)}` : `http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`
-
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 1024);
         window.addEventListener("resize", handleResize);
@@ -158,6 +156,8 @@ const ArticleDetails = () => {
             </div>
         );
     }
+
+    const proxyRoute = process.env.REACT_APP_SERVER_URL ? `${process.env.REACT_APP_SERVER_URL}/api/proxy?url=${encodeURIComponent(article.url)}` : `http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`
 
     return (
         <div className={`article-details-page ${iframeOpen ? "iframe-open" : ""} ${isMobile ? "is-mobile" : ""}`}>
