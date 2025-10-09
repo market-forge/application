@@ -13,6 +13,8 @@ const ArticleDetails = () => {
     const [iframeOpen, setIframeOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
+    const proxyRoute = process.env.REACT_APP_SERVER_URL ? `${process.env.REACT_APP_SERVER_URL}/api/proxy?url=${encodeURIComponent(article.url)}` : `http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`
+
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 1024);
         window.addEventListener("resize", handleResize);
@@ -184,7 +186,7 @@ const ArticleDetails = () => {
                 {/* IFRAME SECTION */}
                 <div className={`iframe-desktop iframe-wrapper ${iframeVisible ? "iframe-visible" : ""}`} aria-hidden={!iframeVisible}>
                     <iframe
-                        src={`${process.env.REACT_APP_SERVER_URL}/api/proxy?url=${encodeURIComponent(article.url)}` || `http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`}
+                        src={proxyRoute}
                         title="External Article"
                         sandbox="allow-scripts allow-same-origin"
                         onLoad={() => setIframeLoaded(true)}
@@ -280,7 +282,7 @@ const ArticleDetails = () => {
 
                     <div className={`iframe-wrapper ${iframeVisible ? "iframe-visible" : ""}`} aria-hidden={!iframeVisible}>
                         <iframe
-                            src={`http://localhost:8000/api/proxy?url=${encodeURIComponent(article.url)}`}
+                            src={proxyRoute}
                             title="External Article"
                             sandbox="allow-scripts allow-same-origin"
                             onLoad={() => setIframeLoaded(true)}
