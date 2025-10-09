@@ -1,5 +1,5 @@
 // API service for making requests to the backend
-const API_BASE_URL = `${process.env.REACT_APP_SERVER_URL}/api` || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.REACT_APP_SERVER_URL ? `${process.env.REACT_APP_SERVER_URL}/api` : 'http://localhost:8000/api';
 
 class ApiService {
     // Get auth token from localStorage
@@ -106,6 +106,7 @@ class ApiService {
     // Get all available summaries (for date selection)
     static async getAllSummaries() {
         const url = `${API_BASE_URL}/summaries`;
+        console.log("awifhaoiwfaiwgha!!!", url);
         return await this.fetchWithErrorHandling(url);
     }
 
