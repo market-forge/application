@@ -10,7 +10,7 @@ const FavoritesPage = () => {
     }, []);
 
     if (favorites.length === 0) {
-        return <h2 style={{ textAlign: 'center', marginTop: '2rem' }}>No favorite articles yet ❤️</h2>;
+        return <h2 style={{ textAlign: 'center', marginTop: '2rem' }}>No favorite articles yet </h2>;
     }
 
     return (

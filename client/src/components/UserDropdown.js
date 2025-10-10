@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ProfileEditModal from './ProfileEditModal';
 import ApiService from '../services/api';
+import { Link } from "react-router-dom";
 
 const UserDropdown = ({ user, setUser }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -150,6 +151,8 @@ const UserDropdown = ({ user, setUser }) => {
                             </svg>
                             Sign out
                         </button>
+
+                        <Link to="/favorites">Favorites</Link>
                     </div>
                 </div>
             )}

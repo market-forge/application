@@ -6,6 +6,7 @@ import ArticleDetails from './pages/ArticleDetails';
 import SignInNav from "./layout/SignInNav";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
+import FavoritesPage from "./pages/FavoritesPage";
 
 function App() {
     useEffect(() => {
