@@ -1525,6 +1525,28 @@
     transform: translateX(0) scale(1);
 }
 
+
+/* favorites button */
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+.favorite-btn.faved {
+  color: red;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
 @media (max-width: 1024px) {
     .article-details-layout {
         grid-template-columns: 1fr;
