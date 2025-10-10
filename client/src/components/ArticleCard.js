@@ -1,9 +1,31 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Component to display individual article
 const ArticleCard = ({ article }) => {
     const navigate = useNavigate();
+    const [isFaved, setIsFaved] = useState(false);
+
+    // load fourites from local storage
+    useEffect(() => {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        setIsFaved(favorites.some(fav => fav._id === article._id));
+    },[article._id]);
+
+    // Toggle favorite status
+    const toggleFavorite = () => {
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        // remove from favorites
+        if (isFaved) {
+            favorites = favorites.filter(fav => fav._id !== article._id);
+            setIsFaved(false);
+        } else {
+            // add to favorites
+            favorites.push(article);
+            setIsFaved(true);
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    };
 
     // Format the published time
     const formatPublishedTime = (timePublished) => {
@@ -47,6 +69,19 @@ const ArticleCard = ({ article }) => {
 
     return (
         <div className="article-card" onClick={handleCardClick}>
+            {/* Favorite Button */}
+            <button 
+                className={`favorite-btn ${isFaved ? "faved" : ""}`} 
+                onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite();
+                }}
+                aria-label={isFaved ? "Remove from favorites" : "Add to favorites"}
+                >
+                {isFaved ? "⭐" : "☆"}
+            </button>
+
+
             {/* Article Header */}
             <div className="article-header">
                 <h3 className="article-title">
