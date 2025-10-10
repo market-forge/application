@@ -25,6 +25,7 @@ function App() {
 
                   <Route index element={<NewsDisplay />} />
                   <Route path="article/:id" element={<ArticleDetails />} />
+                  <Route path="favorites" element={<FavoritesPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
           </Routes>
