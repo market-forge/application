@@ -1,6 +1,6 @@
 import express from "express";
 import Favorite from "../models/Favorite.js";
-import { verifyToken } from "../middleware/auth.js";
+import { verifyToken } from "../middleware/auth.js"; 
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", verifyToken, async (req, res) => {
   try {
     const favorites = await Favorite.find({ userId: req.user.id });
-    res.json(favorites);
+    res.json(favorites); // ✅ return plain array
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -18,13 +18,20 @@ router.get("/", verifyToken, async (req, res) => {
 router.post("/:articleId", verifyToken, async (req, res) => {
   try {
     const { article } = req.body;
+
+    if (!article || !req.params.articleId) {
+      return res.status(400).json({ message: "Missing article data" });
+    }
+
     const favorite = new Favorite({
       userId: req.user.id,
       article,
     });
+
     await favorite.save();
     res.status(201).json(favorite);
   } catch (err) {
+    console.error("Error adding favorite:", err);
     res.status(400).json({ message: err.message });
   }
 });

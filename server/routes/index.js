@@ -5,6 +5,7 @@ import summaryRoutes from './summaryRoutes.js';
 import oauthRoutes from "./oauth.js";
 import profileRoutes from "./profileRoutes.js";
 import proxyRoute from "./proxy.js";
+import favoritesRoutes from "./favorites.js";
 
 const router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/summaries', summaryRoutes);
 router.use("/oauth", oauthRoutes);
 router.use("/profile", profileRoutes);
 router.use("/proxy", proxyRoute);
+router.use("/favorites", favoritesRoutes);
 
 export default router;
