@@ -12,7 +12,7 @@ class ApiService {
         const token = this.getAuthToken();
         return token ? {
             'Authorization': `Bearer ${token}`,
-            'x-auth-token': token // Also send as custom header for fallback
+            'x-auth-token': token
         } : {};
     }
 
@@ -74,8 +74,6 @@ class ApiService {
         });
     }
 
-    // Existing methods...
-    
     // Fetch combined summary and articles for a specific date
     static async getCombinedDataByDate(date) {
         const formattedDate = this.formatDateForAPI(date);
@@ -106,8 +104,29 @@ class ApiService {
     // Get all available summaries (for date selection)
     static async getAllSummaries() {
         const url = `${API_BASE_URL}/summaries`;
-        console.log("awifhaoiwfaiwgha!!!", url);
         return await this.fetchWithErrorHandling(url);
+    }
+
+    // Get comments for a summary
+    static async getSummaryComments(summaryDate) {
+        const url = `${API_BASE_URL}/summaries/${summaryDate}/comments`;
+        return await this.fetchWithErrorHandling(url);
+    }
+
+    // Add comment to a summary
+    static async addSummaryComment(summaryDate, commentData) {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            throw new Error('No authentication token found. Please sign in.');
+        }
+        
+        const url = `${API_BASE_URL}/summaries/${summaryDate}/comments`;
+        
+        return await this.fetchWithErrorHandling(url, {
+            method: 'POST',
+            body: JSON.stringify(commentData)
+        });
     }
 
     // Test API connection
