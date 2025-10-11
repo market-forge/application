@@ -5,7 +5,7 @@ import summaryRoutes from './summaryRoutes.js';
 import oauthRoutes from "./oauth.js";
 import profileRoutes from "./profileRoutes.js";
 import proxyRoute from "./proxy.js";
-import favoritesRoutes from "./favorites.js";
+import favoritesRoutes from "./favoritesRoutes.js";
 
 const router = express.Router();
 
