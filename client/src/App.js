@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NewsDisplay from './pages/NewsDisplay';
 import ArticleDetails from './pages/ArticleDetails';
 import SummaryDetails from './pages/SummaryDetails';
-// import ApiTest from './components/ApiTest';
 import SignInNav from "./layout/SignInNav";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
+import FavoritesPage from "./pages/FavoritesPage";
 
 function App() {
     useEffect(() => {
@@ -14,7 +14,7 @@ function App() {
     const token = urlParams.get("token");
     if (token) {
       localStorage.setItem("token", token);
-      window.history.replaceState({}, document.title, "/"); // clean URL
+      window.history.replaceState({}, document.title, "/");
         }
     }, []);
 
@@ -26,6 +26,7 @@ function App() {
 
                   <Route index element={<NewsDisplay />} />
                   <Route path="article/:id" element={<ArticleDetails />} />
+                  <Route path="favorites" element={<FavoritesPage />} />
                   <Route path="summary/:date" element={<SummaryDetails />} />
               </Route>
               <Route path="*" element={<NotFound />} />

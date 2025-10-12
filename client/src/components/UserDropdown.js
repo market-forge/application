@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ProfileEditModal from './ProfileEditModal';
 import ApiService from '../services/api';
+import { useNavigate } from 'react-router-dom';
 
 const UserDropdown = ({ user, setUser }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +9,7 @@ const UserDropdown = ({ user, setUser }) => {
     const [fullUserProfile, setFullUserProfile] = useState(null);
     const [loading, setLoading] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -22,6 +24,10 @@ const UserDropdown = ({ user, setUser }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const handleFavorite = () => {
+        navigate("/favorites");
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -140,6 +146,26 @@ const UserDropdown = ({ user, setUser }) => {
                             </svg>
                             {loading ? 'Loading...' : 'Edit Profile'}
                         </button>
+                        {/* favorite button */}
+                        <button
+                            onClick={handleFavorite}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center rounded-md transition duration-200"
+                            >
+                            <svg
+                                className="w-4 h-4 mr-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5.121 19.364l1.415-1.415A8 8 0 1116.97 7.93l1.415-1.415A10 10 0 105.12 19.364z"
+                                />
+                            </svg>
+                            Favorites
+                        </button>
 
                         <button
                             onClick={handleLogout}
@@ -150,6 +176,8 @@ const UserDropdown = ({ user, setUser }) => {
                             </svg>
                             Sign out
                         </button>
+
+                        
                     </div>
                 </div>
             )}

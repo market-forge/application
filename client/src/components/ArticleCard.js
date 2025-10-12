@@ -1,9 +1,87 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const API_URL = process.env.REACT_APP_SERVER_URL 
 
 // Component to display individual article
 const ArticleCard = ({ article }) => {
     const navigate = useNavigate();
+    const [isFaved, setIsFaved] = useState(false);
+    const token = localStorage.getItem("token");
+
+    // load favorites from local storage
+    useEffect(() => {
+        const checkFavorite = async () => {
+            try {
+                const res = await fetch(`${API_URL}/api/favorites`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                
+                const favorites = await res.json();
+                if (Array.isArray(favorites)) {
+                    setIsFaved(favorites.some(fav => fav.article._id === article._id));
+                } else {
+                    console.warn("Unexpected favorites response:", favorites);
+                }
+
+            } catch (err) {
+                console.error("Error checking favorites:", err);
+            }
+            };
+            if (token) checkFavorite();
+        }, [article._id, token]
+    );
+
+    const handleLinkClick = (e) => {
+        e.stopPropagation(); // Prevent card click when clicking external link
+    };
+    // Toggle favorite status
+    // Toggle favorite status
+    const toggleFavorite = async (e) => {
+        e.stopPropagation();
+
+        if (!token) {
+            return alert("Please sign in to favorite articles.");
+        }
+
+        try {
+            if (isFaved) {
+            // DELETE request to remove favorite
+            const response = await fetch(`${API_URL}/api/favorites/${article._id}`, {
+                method: "DELETE",
+                headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to remove favorite: ${response.statusText}`);
+            }
+
+            setIsFaved(false);
+            } else {
+            // POST request to add favorite
+            const response = await fetch(`${API_URL}/api/favorites/${article._id}`, {
+                method: "POST",
+                headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ article }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to add favorite: ${response.statusText}`);
+            }
+
+            setIsFaved(true);
+            }
+    } catch (err) {
+        console.error("Error toggling favorite:", err);
+    }
+    };
+
 
     // Format the published time
     const formatPublishedTime = (timePublished) => {
@@ -41,12 +119,25 @@ const ArticleCard = ({ article }) => {
         navigate(`/article/${article._id}`);
     };
 
-    const handleLinkClick = (e) => {
-        e.stopPropagation(); // Prevent card click when clicking external link
-    };
-
     return (
         <div className="article-card" onClick={handleCardClick}>
+            {/* Favorite Button */}
+            <button 
+                className={`absolute top-2 right-2 px-2 py-1 rounded-full transition ${
+                    isFaved
+                        ? "bg-yellow-600 text-white"
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                }`}
+                onClick={(e) => {
+                    handleLinkClick(e);
+                    toggleFavorite(e);
+                }}
+                aria-label={isFaved ? "Remove from favorites" : "Add to favorites"}
+                >
+                {isFaved ? "⭐" : "☆"}
+            </button>
+
+
             {/* Article Header */}
             <div className="article-header">
                 <h3 className="article-title">
