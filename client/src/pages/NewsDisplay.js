@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ApiService from '../services/api';
 import SummaryCard from '../components/SummaryCard';
 import ArticleCard from '../components/ArticleCard';
@@ -6,8 +7,11 @@ import DatePicker from '../components/DatePicker';
 
 // Main component that handles the news display
 const NewsDisplay = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const dateFromUrl = searchParams.get('date');
+
     const [selectedDate, setSelectedDate] = useState(
-        new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
+        dateFromUrl || new Date().toISOString().split('T')[0] // Use URL date or today's date
     );
     const [data, setData] = useState({
         summary: null,
@@ -97,11 +101,14 @@ const NewsDisplay = () => {
     // Handle date change
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
-    };
-
-    // Refresh current date data
-    const handleRefresh = () => {
-        loadDataForDate(selectedDate);
+        // Update URL parameter
+        if (newDate === new Date().toISOString().split('T')[0]) {
+            // Remove date param if it's today
+            searchParams.delete('date');
+        } else {
+            searchParams.set('date', newDate);
+        }
+        setSearchParams(searchParams);
     };
 
     // Debug data display
@@ -129,6 +136,21 @@ const NewsDisplay = () => {
         return null;
     };
 
+    const formatDateForDisplay = (dateString) => {
+        try {
+            // dateString should be in YYYY-MM-DD format
+            const date = new Date(dateString + 'T00:00:00');
+            return date.toLocaleDateString('en-UK', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (error) {
+            return dateString;
+        }
+    };
+
     return (
         <>
             {/* Header */}
@@ -149,11 +171,10 @@ const NewsDisplay = () => {
                             Market Forge
                         </h1>
                         <span className="text-sm sm:text-lg font-medium opacity-80 text-white tracking-wide">
-      Financial News
-    </span>
+                            Financial News
+                        </span>
                     </div>
                 </div>
-
 
                 {/* Center: Date Picker */}
                 <div className="flex-1 flex justify-end">
@@ -168,8 +189,8 @@ const NewsDisplay = () => {
             <div className="news-display App">
 
 
-                {/* Debug Info (only in development) */}
-                {debugInfo()}
+                {/* Debug Info (only in development)
+                {debugInfo()} */}
 
                 {/* Content */}
                 {!loading && !error && (
@@ -185,7 +206,7 @@ const NewsDisplay = () => {
                                 <h2>Articles ({data.total_articles})</h2>
                                 {data.total_articles === 0 && (
                                     <p style={{color: '#6c757d', fontStyle: 'italic'}}>
-                                        No articles found for {selectedDate}. Try selecting a different date.
+                                        No articles found for {formatDateForDisplay(selectedDate)}. Try selecting a different date.
                                     </p>
                                 )}
                             </div>
@@ -202,7 +223,7 @@ const NewsDisplay = () => {
                             ) : (
                                 !loading && (
                                     <div className="no-articles">
-                                        <p>No articles found for {selectedDate}</p>
+                                        <p>No articles found</p>
                                         <p style={{fontSize: '0.9rem', color: '#6c757d'}}>
                                             Try selecting a different date or check if data exists for this date.
                                         </p>
