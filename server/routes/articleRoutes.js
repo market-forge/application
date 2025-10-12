@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import Article from "../models/Article.js";
 import Summary from "../models/Summary.js";
+import cronSummaries from "../middleware/cronSummaries.js";
 
 const router = express.Router();
 
@@ -96,20 +97,9 @@ router.get("/id/:id", async (req, res, next) => {
     }
 });
 
-// Internal middleware to protect CREATE route
-const internalOnly = (req, res, next) => {
-    // Check if request is from internal system
-    const internalToken = req.headers['x-internal-token'];
-    const expectedToken = process.env.INTERNAL_API_TOKEN;
-
-    if (!internalToken || internalToken !== expectedToken) {
-        return res.status(403).json({error: "Forbidden: Internal access only"});
-    }
-    next();
-};
 const sampleNews = `Apple Inc. reported record quarterly revenue of $123.9 billion for Q4 2024, beating analyst expectations of $118.5 billion. The tech giant's iPhone sales surged 12% year-over-year, driven by strong demand for the new iPhone 15 Pro models. CEO Tim Cook highlighted the company's expansion into artificial intelligence and services, which now account for 23% of total revenue. Apple's stock price jumped 5.2% in after-hours trading following the earnings announcement. The company also announced a new $90 billion share buyback program and increased its quarterly dividend by 4%. Analysts are optimistic about Apple's AI initiatives and expect continued growth in the services segment throughout 2025.`;
 
-router.post("/", internalOnly, async (req, res, next) => {
+router.post("/", cronSummaries, async (req, res, next) => {
     try {
         const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
