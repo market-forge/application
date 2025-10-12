@@ -149,7 +149,7 @@ const UserDropdown = ({ user, setUser }) => {
                         {/* favorite button */}
                         <button
                             onClick={handleFavorite}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center rounded-md transition duration-200"
+                            className="w-full text-left px-4 py-2 text-sm text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 flex items-center rounded-md transition duration-200"
                             >
                             <svg
                                 className="w-4 h-4 mr-3"
@@ -158,10 +158,10 @@ const UserDropdown = ({ user, setUser }) => {
                                 viewBox="0 0 24 24"
                             >
                                 <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5.121 19.364l1.415-1.415A8 8 0 1116.97 7.93l1.415-1.415A10 10 0 105.12 19.364z"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                                 />
                             </svg>
                             Favorites

@@ -22,8 +22,6 @@ function App() {
       <Router>
           <Routes>
               <Route path="/" element={<SignInNav />}>
-
-
                   <Route index element={<NewsDisplay />} />
                   <Route path="article/:id" element={<ArticleDetails />} />
                   <Route path="favorites" element={<FavoritesPage />} />

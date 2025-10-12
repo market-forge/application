@@ -4,7 +4,7 @@ import React from "react";
 function GoogleLoginButton() {
   const handleLogin = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/oauth/url`);
+      const res = await fetch(process.env.REACT_APP_SERVER_URL ? `${process.env.REACT_APP_SERVER_URL}/api/oauth/url` : 'http://localhost:8000/api/oauth/url');
       const data = await res.json();
       window.location.href = data.url; // send user to Google login
     } catch (err) {
