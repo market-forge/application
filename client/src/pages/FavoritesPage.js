@@ -56,6 +56,11 @@ const FavoritesPage = () => {
         fetchFavorites();
     }, [fetchFavorites]); // Now fetchFavorites is stable due to useCallback
 
+    // Callback function to refresh favorites when an article is unfavorited
+    const handleFavoriteUpdate = useCallback(() => {
+        fetchFavorites(); // Refresh the favorites list
+    }, [fetchFavorites]);
+
     const handleRetry = () => {
         setLoading(true);
         setError(null);
@@ -166,7 +171,7 @@ const FavoritesPage = () => {
             </div>
             <div className="articles-grid">
                 {favorites.map(article => (
-                    <ArticleCard key={article._id} article={article} />
+                    <ArticleCard key={article._id} article={article} onFavoriteUpdate={handleFavoriteUpdate} />
                 ))}
             </div>
         </div>
