@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import ArticleCard from "../components/ArticleCard";
+import { Link } from "react-router-dom";
 
 const FavoritesPage = () => {
     const [favorites, setFavorites] = useState([]);
@@ -8,7 +9,7 @@ const FavoritesPage = () => {
 
     const API_URL = process.env.REACT_APP_SERVER_URL;
 
-    const fetchFavorites = async () => {
+    const fetchFavorites = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
             
@@ -49,11 +50,11 @@ const FavoritesPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [API_URL]); // Add API_URL as dependency since it's used inside
 
     useEffect(() => {
         fetchFavorites();
-    }, [API_URL]);
+    }, [fetchFavorites]); // Now fetchFavorites is stable due to useCallback
 
     const handleRetry = () => {
         setLoading(true);
@@ -66,6 +67,21 @@ const FavoritesPage = () => {
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <h2>Loading favorites...</h2>
                 <p>Please wait while we fetch your favorite articles.</p>
+                <Link 
+                    to="/"
+                    style={{
+                        display: 'inline-block',
+                        marginTop: '1rem',
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#6c757d',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    ← Back to Home
+                </Link>
             </div>
         );
     }
@@ -75,20 +91,34 @@ const FavoritesPage = () => {
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <h2>Error loading favorites</h2>
                 <p>{error}</p>
-                <button 
-                    onClick={handleRetry}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Try Again
-                </button>
+                <div style={{ marginTop: '1rem', display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                    <button 
+                        onClick={handleRetry}
+                        style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Try Again
+                    </button>
+                    <Link 
+                        to="/"
+                        style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#6c757d',
+                            color: 'white',
+                            textDecoration: 'none',
+                            borderRadius: '4px',
+                            display: 'inline-block'
+                        }}
+                    >
+                        ← Back to Home
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -98,13 +128,42 @@ const FavoritesPage = () => {
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <h2>No favorite articles yet</h2>
                 <p>Start adding favorites by clicking the star icon on articles!</p>
+                <Link 
+                    to="/"
+                    style={{
+                        display: 'inline-block',
+                        marginTop: '1rem',
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    ← Back to Home
+                </Link>
             </div>
         );
     }
 
     return (
         <div className="favorites-page">
-            <h1>Your Favorite Articles ({favorites.length})</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h1>Your Favorite Articles ({favorites.length})</h1>
+                <Link 
+                    to="/"
+                    style={{
+                        padding: '0.5rem 1rem',
+                        color: 'blue',
+                        textDecoration: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    ← Back to Home
+                </Link>
+            </div>
             <div className="articles-grid">
                 {favorites.map(article => (
                     <ArticleCard key={article._id} article={article} />
