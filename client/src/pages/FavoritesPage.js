@@ -159,7 +159,7 @@ const FavoritesPage = () => {
                 {/* Title Section */}
                 <div className="flex flex-col">
                     <div className="flex items-center gap-4 mb-2">
-                        <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+                        <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-blue-950">
                             Favorite Articles
                         </h1>
                         <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
