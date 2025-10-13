@@ -18,7 +18,7 @@ jobs:
             echo "Attempt $attempt of $max_attempts"
           
             response=$(curl -s -o /dev/null -w "%{http_code}" \
-              --max-time 90 \
+              --max-time 500 \
               -X POST \
               -H "x-internal-token: ${{ secrets.CRON_SECRET }}" \
               "https://market-forge.onrender.com/api/articles")
