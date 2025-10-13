@@ -29,7 +29,7 @@ const ArticleCard = ({ article, onFavoriteUpdate }) => { // Add onFavoriteUpdate
             }
         };
         if (token) checkFavorite();
-    }, [article._id, token, API_URL]);
+    }, [article._id, token]);
 
     const handleLinkClick = (e) => {
         e.stopPropagation(); // Prevent card click when clicking external link

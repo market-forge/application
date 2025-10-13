@@ -154,27 +154,38 @@ const FavoritesPage = () => {
 
     return (
         <div className="favorites-page">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1>Your Favorite Articles ({favorites.length})</h1>
+            {/* Header Section */}
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6 mb-8">
+                {/* Title Section */}
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-4 mb-2">
+                        <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+                            Favorite Articles
+                        </h1>
+                        <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            {favorites.length}
+                        </span>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400 text-lg">
+                        Your personalized collection of saved articles
+                    </p>
+                </div>
+
+                {/* Back to Home Button */}
                 <Link 
                     to="/"
-                    style={{
-                        padding: '0.5rem 1rem',
-                        color: 'blue',
-                        textDecoration: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
+                    className="flex items-center justify-center gap-2 px-6 py-3 text-blue-700 bg-white font-medium hover:bg-gray-50 hover:shadow-md transition-all duration-200 w-full lg:w-auto"
                 >
-                    ← Back to Home
+                    <span className="text-xl">←</span>
+                    Back to Home
                 </Link>
             </div>
             <div className="articles-grid">
                 {favorites.map(article => (
                     <ArticleCard key={article._id} article={article} onFavoriteUpdate={handleFavoriteUpdate} />
                 ))}
-            </div>
-        </div>
+            </div>  
+        </div>      
     );
 };
 
