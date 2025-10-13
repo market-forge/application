@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = process.env.REACT_APP_SERVER_URL 
+const API_URL = process.env.REACT_APP_SERVER_URL;
 
 // Component to display individual article
-const ArticleCard = ({ article }) => {
+const ArticleCard = ({ article, onFavoriteUpdate }) => { // Add onFavoriteUpdate prop
     const navigate = useNavigate();
     const [isFaved, setIsFaved] = useState(false);
     const token = localStorage.getItem("token");
 
-    // load favorites from local storage
+    // Load favorites from API
     useEffect(() => {
         const checkFavorite = async () => {
             try {
@@ -27,15 +27,14 @@ const ArticleCard = ({ article }) => {
             } catch (err) {
                 console.error("Error checking favorites:", err);
             }
-            };
-            if (token) checkFavorite();
-        }, [article._id, token]
-    );
+        };
+        if (token) checkFavorite();
+    }, [article._id, token]);
 
     const handleLinkClick = (e) => {
         e.stopPropagation(); // Prevent card click when clicking external link
     };
-    // Toggle favorite status
+
     // Toggle favorite status
     const toggleFavorite = async (e) => {
         e.stopPropagation();
@@ -46,42 +45,46 @@ const ArticleCard = ({ article }) => {
 
         try {
             if (isFaved) {
-            // DELETE request to remove favorite
-            const response = await fetch(`${API_URL}/api/favorites/${article._id}`, {
-                method: "DELETE",
-                headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                },
-            });
+                // DELETE request to remove favorite
+                const response = await fetch(`${API_URL}/api/favorites/${article._id}`, {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
 
-            if (!response.ok) {
-                throw new Error(`Failed to remove favorite: ${response.statusText}`);
-            }
+                if (!response.ok) {
+                    throw new Error(`Failed to remove favorite: ${response.statusText}`);
+                }
 
-            setIsFaved(false);
+                setIsFaved(false);
+                
+                // Call the update callback if provided (for FavoritesPage)
+                if (onFavoriteUpdate) {
+                    onFavoriteUpdate();
+                }
             } else {
-            // POST request to add favorite
-            const response = await fetch(`${API_URL}/api/favorites/${article._id}`, {
-                method: "POST",
-                headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ article }),
-            });
+                // POST request to add favorite
+                const response = await fetch(`${API_URL}/api/favorites/${article._id}`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ article }),
+                });
 
-            if (!response.ok) {
-                throw new Error(`Failed to add favorite: ${response.statusText}`);
-            }
+                if (!response.ok) {
+                    throw new Error(`Failed to add favorite: ${response.statusText}`);
+                }
 
-            setIsFaved(true);
+                setIsFaved(true);
             }
-    } catch (err) {
-        console.error("Error toggling favorite:", err);
-    }
+        } catch (err) {
+            console.error("Error toggling favorite:", err);
+        }
     };
-
 
     // Format the published time
     const formatPublishedTime = (timePublished) => {
@@ -133,10 +136,9 @@ const ArticleCard = ({ article }) => {
                     toggleFavorite(e);
                 }}
                 aria-label={isFaved ? "Remove from favorites" : "Add to favorites"}
-                >
+            >
                 {isFaved ? "⭐" : "☆"}
             </button>
-
 
             {/* Article Header */}
             <div className="article-header">
