@@ -21,15 +21,15 @@ jobs:
               --max-time 90 \
               -X POST \
               -H "x-internal-token: ${{ secrets.CRON_SECRET }}" \
-              "https://your-app.onrender.com/api/articles")
+              "https://market-forge.onrender.com/api/articles")
           
             if [ $response -eq 200 ]; then
               echo "Success!"
               exit 0
             fi
           
-            echo "Failed with status $response, waiting 30s before retry..."
-            sleep 30
+            echo "Failed with status $response, waiting 60s before retry..."
+            sleep 60
             attempt=$((attempt + 1))
           done
           
