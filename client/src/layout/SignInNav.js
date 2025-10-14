@@ -4,30 +4,56 @@ import { Outlet } from "react-router-dom";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import UserDropdown from "../components/UserDropdown";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
+function useAuthCallback(setUser) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const code = params.get("code");
+        if (code) {
+            // Exchange code for token on your server
+            fetch(`${process.env.REACT_APP_SERVER_URL}/api/oauth/callback?code=${code}`)
+                .then(res => res.json())
+                .then(data => {
+                    localStorage.setItem("token", data.token);
+                    try {
+                        const payload = JSON.parse(atob(data.token.split(".")[1]));
+                        setUser({
+                            name: payload.name || payload.full_name,
+                            email: payload.email,
+                            picture: payload.picture
+                        });
+                    } catch (err) {
+                        console.error("Failed to decode token:", err);
+                    }
+                    navigate("/"); // Remove code from URL
+                })
+                .catch(err => console.error(err));
+        }
+    }, [location.search, setUser, navigate]);
+}
+
 function SignInNav() {
     const [user, setUser] = useState(null);
     // console.log("Current user:", user);
 
     useEffect(() => {
-        const loadUserFromToken = () => {
-            const token = localStorage.getItem("token");
-            if (token) {
-                const payload = JSON.parse(atob(token.split(".")[1]));
-                setUser({
-                    name: payload.name || payload.full_name,
-                    email: payload.email,
-                    picture: payload.picture
-                });
-            } else {
-                setUser(null);
-            }
-        };
-
-        loadUserFromToken();
-
-        window.addEventListener("storage", loadUserFromToken);
-        return () => window.removeEventListener("storage", loadUserFromToken);
+        const token = localStorage.getItem("token");
+        if (token) {
+            // decode token payload
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            setUser({
+                name: payload.name || payload.full_name,
+                email: payload.email,
+                picture: payload.picture
+            });
+        }
     }, []);
+
+    useAuthCallback(setUser);
 
     return (
         <>
