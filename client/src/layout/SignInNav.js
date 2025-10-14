@@ -9,16 +9,24 @@ function SignInNav() {
     // console.log("Current user:", user);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            // decode token payload
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            setUser({ 
-                name: payload.name || payload.full_name,
-                email: payload.email,
-                picture: payload.picture
-            });
-        }
+        const loadUserFromToken = () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                setUser({
+                    name: payload.name || payload.full_name,
+                    email: payload.email,
+                    picture: payload.picture
+                });
+            } else {
+                setUser(null);
+            }
+        };
+
+        loadUserFromToken();
+
+        window.addEventListener("storage", loadUserFromToken);
+        return () => window.removeEventListener("storage", loadUserFromToken);
     }, []);
 
     return (
